@@ -37,6 +37,7 @@ input{
     padding:12px;
     border:none;
     border-radius:8px;
+    outline:none;
 }
 
 button{
@@ -46,6 +47,13 @@ button{
     color:white;
     border-radius:8px;
     cursor:pointer;
+    margin:5px;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#0a7aa6;
+    transform:scale(1.05);
 }
 
 #weather{ margin-top:15px; color:#fff; }
@@ -73,7 +81,9 @@ button{
     <h2>🌤 Weather Dashboard</h2>
 
     <input type="text" id="city" placeholder="Enter city">
+
     <button onclick="getWeather()">Search</button>
+    <button onclick="logout()" style="background:#ff4d4d;">Logout</button>
 
     <div id="weather"></div>
     <div id="forecast"></div>
@@ -81,6 +91,19 @@ button{
 </div>
 
 <script src="dashboard.js"></script>
+
+<script>
+// logout function
+function logout(){
+    localStorage.removeItem("user");
+    window.location.href = "index.html";
+}
+
+// optional security check
+if(!localStorage.getItem("user")){
+    window.location.href = "index.html";
+}
+</script>
 
 </body>
 </html>
