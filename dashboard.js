@@ -1,42 +1,48 @@
-async function getWeather(){
+console.log("Dashboard JS loaded");
 
-    const city = document.getElementById("city").value;
+window.getWeather = async function () {
 
-    if(city===""){
-        alert("Enter a city name");
+    const city = document.getElementById("city").value.trim();
+
+    if (!city) {
+        alert("Please enter city");
         return;
     }
 
+    document.getElementById("weather").innerHTML = "Loading...";
+
     const url = `https://api.weatherapi.com/v1/forecast.json?key=f66d2cd577d54f14a0863529263006&q=${city}&days=3`;
 
-    try{
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-        const response = await fetch(url);
-        const data = await response.json();
+        if (data.error) {
+            document.getElementById("weather").innerHTML = data.error.message;
+            return;
+        }
 
         document.getElementById("weather").innerHTML = `
-            <h2>${data.location.name}, ${data.location.country}</h2>
-            <h3>${data.current.temp_c} °C</h3>
+            <h3>${data.location.name}</h3>
+            <h2>${data.current.temp_c}°C</h2>
             <p>${data.current.condition.text}</p>
-            <p>Humidity: ${data.current.humidity}%</p>
-            <p>Wind: ${data.current.wind_kph} km/h</p>
         `;
 
-        let forecastHTML = "";
+        let html = "";
 
-        data.forecast.forecastday.forEach(day=>{
-            forecastHTML += `
+        data.forecast.forecastday.forEach(day => {
+            html += `
                 <div class="card">
-                    <h4>${day.date}</h4>
-                    <img src="https:${day.day.condition.icon}">
-                    <p>${day.day.avgtemp_c} °C</p>
+                    <p>${day.date}</p>
+                    <p>${day.day.avgtemp_c}°C</p>
                 </div>
             `;
         });
 
-        document.getElementById("forecast").innerHTML = forecastHTML;
+        document.getElementById("forecast").innerHTML = html;
 
-    }catch(error){
-        document.getElementById("weather").innerHTML="<p>City not found!</p>";
+    } catch (err) {
+        console.log(err);
+        document.getElementById("weather").innerHTML = "Error fetching data";
     }
-}
+};
